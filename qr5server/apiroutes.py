@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from qr5server import app
 
 @app.route('/', methods=['GET'])
