@@ -12,3 +12,7 @@ def not_found(error):
 @app.errorhandler(405)
 def not_found(error):
     return make_response(jsonify({'Error': 'Method Not Allowed'}), 405)
+
+@app.errorhandler(500)
+def server_error(error):
+    return make_response(jsonify({'Error': 'Internal Server Error'}), 500)
