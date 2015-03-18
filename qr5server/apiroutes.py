@@ -16,8 +16,8 @@ def index():
 def get_record(recordid):
     '''API endpoint to get a record by id'''
     try:
-        instance = QR5Record.query.filter_by(id=recordid).one()
-        return jsonify({'record': instance})
+        instance = QR5Record.query.filter_by(record_id=recordid).one()
+        return jsonify(instance.serialize)
     except NoResultFound:
         abort(404)
     except MultipleResultsFound:
@@ -37,9 +37,9 @@ def upload():
         geo = feature['geometry']
         guid = attrs['ID'].replace('{', '').replace('}', '')
         try:
-            instance = QR5Record.query.filter_by(id=guid).one()
+            instance = QR5Record.query.filter_by(record_id=guid).one()
         except NoResultFound:
-            instance = QR5Record(id=guid)
+            instance = QR5Record(record_id=guid)
             db.session.add(instance)
 
         instance.lat = geo['y']

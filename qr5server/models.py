@@ -1,6 +1,12 @@
+'''SQL Alchemy models'''
+
+# pylint: disable=no-init
+# pylint: disable=too-few-public-methods
+
 from qr5server import db
 
 class QR5Record(db.Model):
+    '''Object to hold QR5 inspection records'''
     record_id = db.Column(db.String(40), primary_key=True)
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
@@ -17,8 +23,13 @@ class QR5Record(db.Model):
     response = db.Column(db.String(255))
 
     def __repr__(self):
-        return '<QR5Record %r>' % self.id
+        return '<QR5Record %r>' % self.record_id
 
+    @property
     def serialize(self):
         '''Return object in dict for easy serialization'''
-        pass
+        return {
+            'record_id':self.record_id,
+            'lat': self.lat,
+            'lng' : self.lng,
+        }
