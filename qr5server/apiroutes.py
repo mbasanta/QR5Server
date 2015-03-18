@@ -3,7 +3,7 @@
 # pylint: disable=no-member
 
 from flask import jsonify, request, abort
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from qr5server import app, db
 from qr5server.models import QR5Record
 
@@ -11,6 +11,17 @@ from qr5server.models import QR5Record
 def index():
     '''Place holder for landing page'''
     return jsonify({'server': 'QR5 Database'})
+
+@app.route('/qr5record/<recordid>/', methods=['GET'])
+def get_record(recordid):
+    '''API endpoint to get a record by id'''
+    try:
+        instance = QR5Record.query.filter_by(id=recordid).one()
+        return jsonify({'record': instance})
+    except NoResultFound:
+        abort(404)
+    except MultipleResultsFound:
+        abort(400)
 
 @app.route('/upload/', methods=['POST'])
 def upload():
@@ -24,10 +35,11 @@ def upload():
     for feature in features:
         attrs = feature['attributes']
         geo = feature['geometry']
+        guid = attrs['ID'].replace('{', '').replace('}', '')
         try:
-            instance = QR5Record.query.filter_by(id=attrs['ID']).one()
+            instance = QR5Record.query.filter_by(id=guid).one()
         except NoResultFound:
-            instance = QR5Record(id=attrs['ID'])
+            instance = QR5Record(id=guid)
             db.session.add(instance)
 
         instance.lat = geo['y']
