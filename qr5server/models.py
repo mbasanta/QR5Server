@@ -31,5 +31,16 @@ class QR5Record(db.Model):
         return {
             'record_id':self.record_id,
             'lat': self.lat,
-            'lng' : self.lng,
+            'lng': self.lng,
+            'dfirm_feat_id': self.dfirm_feat_id,
+            'dfirm_layer': self.dfirm_layer,
+            'firm_panel': self.firm_panel,
+            'error_code': self.error_code,
+            'error_desc': self.error_desc,
+            'qc_reviewer': self.qc_reviewer,
+            'qc_status': self.qc_status,
+            'changes_made': self.changes_made,
+            'changes_verified': self.changes_verified,
+            'comments': self.comments,
+            'response': self.response
         }
