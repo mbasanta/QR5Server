@@ -12,6 +12,12 @@ def index():
     '''Place holder for landing page'''
     return jsonify({'server': 'QR5 Database'})
 
+@app.route('/qr5record/', methods=['GET'])
+def get_records():
+    '''API endpoint to get all records'''
+    instances = QR5Record.query.all()
+    return jsonify({'records': [instance.serialize for instance in instances]})
+
 @app.route('/qr5record/<recordid>/', methods=['GET'])
 def get_record(recordid):
     '''API endpoint to get a record by id'''
