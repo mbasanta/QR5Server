@@ -1,13 +1,51 @@
-from flask import Flask, jsonify, request
-from qr5server import app
+'''Enpoints for the QR5 api'''
+
+# pylint: disable=no-member
+
+from flask import jsonify, request, abort
+from sqlalchemy.orm.exc import NoResultFound
+from qr5server import app, db
+from qr5server.models import QR5Record
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({'server': 'QR5 Database'});
+    '''Place holder for landing page'''
+    return jsonify({'server': 'QR5 Database'})
 
 @app.route('/upload/', methods=['POST'])
 def upload():
-    if not request.json:
+    '''API endpoint that handles upload of qr5 data'''
+    if not request.get_json() or not 'features' in request.get_json():
         abort(400)
-    print(request.json)
+
+    json = request.get_json()
+    features = json['features']
+
+    for feature in features:
+        attrs = feature['attributes']
+        geo = feature['geometry']
+        try:
+            instance = QR5Record.query.filter_by(id=attrs['ID']).one()
+        except NoResultFound:
+            instance = QR5Record(id=attrs['ID'])
+            db.session.add(instance)
+
+        instance.lat = geo['y']
+        instance.lng = geo['x']
+        instance.dfirm_feat_id = attrs['DFIRM_Feature_ID']
+        instance.dfirm_layer = attrs['DFIRM_Layer']
+        instance.firm_panel = attrs['FIRM_Panel']
+        instance.error_code = attrs['Error_Code']
+        instance.error_desc = attrs['Error_Code_Description']
+        instance.qc_reviewer = attrs['QC_Reviewer']
+        instance.qc_status = attrs['QC_Status']
+        instance.changes_made = attrs['Changes_Made']
+        instance.changes_verified = attrs['Changes_Verified']
+        instance.comments = attrs['Comments']
+        instance.response = attrs['Response']
+
+        db.session.commit()
+
+    # app.logger.info(json['features'])
+
     return jsonify({'Status': 'Success'}), 202
