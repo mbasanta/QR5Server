@@ -1,4 +1,5 @@
 #!/Users/mbasanta/virtualenvs/QR5Server/bin/python
+
 import imp
 from migrate.versioning import api
 from qr5server import db
