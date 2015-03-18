@@ -6,6 +6,7 @@ from flask import jsonify, request, abort
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from qr5server import app, db
 from qr5server.models import QR5Record
+from config import RECORDS_PER_PAGE
 
 @app.route('/', methods=['GET'])
 def index():
@@ -13,10 +14,21 @@ def index():
     return jsonify({'server': 'QR5 Database'})
 
 @app.route('/qr5record/', methods=['GET'])
-def get_records():
+@app.route('/qr5record/<int:page>/', methods=['GET'])
+def get_records(page=1):
     '''API endpoint to get all records'''
-    instances = QR5Record.query.all()
-    return jsonify({'records': [instance.serialize for instance in instances]})
+    datapage = QR5Record.query.paginate(page, RECORDS_PER_PAGE, True)
+
+    next_page = datapage.next_num if datapage.has_next else -1
+    prev_page = datapage.prev_num if datapage.has_prev else -1
+
+    return jsonify({
+        'records': [item.serialize for item in datapage.items],
+        'next_num': next_page,
+        'prev_num': prev_page,
+        'items': datapage.total,
+        'pages': datapage.pages
+    })
 
 @app.route('/qr5record/<recordid>/', methods=['GET'])
 def get_record(recordid):
