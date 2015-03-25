@@ -3,5 +3,7 @@ python:
     - "2.7"
 # command to install dependencies
 install: "pip install -r requirements/dev.txt"
+# copy our config template to a real file
+before_script: "cp config.py.template config.py"
 # command to run tests
-script: nosetests -v
+script: "nosetests -v"
