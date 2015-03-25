@@ -1,4 +1,4 @@
-# QR5 Server
+# QR5 Server [![Build Status](https://travis-ci.org/mbasanta/QR5Server.svg)](https://travis-ci.org/mbasanta/QR5Server)
 
 ## Requirments
 
