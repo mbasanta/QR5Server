@@ -1,0 +1,47 @@
+'''Application Configuration'''
+
+# pylint: disable=too-few-public-methods
+
+import os
+
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
+class BaseConfiguration(object):
+    '''Base config options'''
+    DEBUG = False
+    TESTING = False
+
+    ADMINS = frozenset(['youremail@yourdomain.com'])
+    SECRET_KEY = 'SecretKeyForSessionSigning'
+
+    THREADS_PER_PAGE = 8
+
+    CSRF_ENABLED = True
+    CSRF_SESSION_KEY = "somethingimpossibletoguess"
+
+    RECAPTCHA_USE_SSL = False
+    RECAPTCHA_PUBLIC_KEY = 'blahblahblahblahblahblahblahblahblah'
+    RECAPTCHA_PRIVATE_KEY = 'blahblahblahblahblahblahprivate'
+    RECAPTCHA_OPTIONS = {'theme': 'white'}
+
+    DATABASE = 'app.db'
+
+    DATABASE_PATH = os.path.join(BASEDIR, DATABASE)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
+    SQLALCHEMY_MIGRATE_REPO = os.path.join(BASEDIR, 'db_repository')
+
+    RECORDS_PER_PAGE = 10
+
+
+class TestConfiguration(BaseConfiguration):
+    '''Config options for testing'''
+    TESTING = True
+
+    CSRF_ENABLED = False
+
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+
+
+class DebugConfiguration(BaseConfiguration):
+    '''Config options for debug'''
+    DEBUG = True
