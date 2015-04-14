@@ -58,11 +58,12 @@ def get_datatable():
 
     data = []
     for item in datapage.items:
-        datarow = []
-        datarow.append(item.dfirm_layer)
-        datarow.append(item.firm_panel)
-        datarow.append(item.error_code)
-        datarow.append(item.error_desc)
+        datarow = {}
+        datarow['DT_RowData'] = {'pkey': item.record_id}
+        datarow['dfirm_layer'] = item.dfirm_layer
+        datarow['firm_panel'] = item.firm_panel
+        datarow['error_code'] = item.error_code
+        datarow['error_desc'] = item.error_desc
 
         data.append(datarow)
 
