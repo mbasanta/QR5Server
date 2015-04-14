@@ -51,8 +51,8 @@ def get_datatable():
     params = argparse(request.args.to_dict())
     draw = int(params['draw'])
     length = int(params['length'])
-    page = int(params['start']) / length
-    page = 1 if page < 1 else page
+    page = (int(params['start']) / length) + 1
+    # page = 1 if page < 1 else page
 
     datapage = QR5Record.query.paginate(page, length, True)
 
