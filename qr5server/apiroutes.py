@@ -4,8 +4,10 @@
 
 from flask import jsonify, request, abort
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from datatables import DataTable
 from qr5server import app, db
 from qr5server.models import QR5Record
+from qr5server.helpers.argparse import argparse
 
 @app.route('/', methods=['GET'])
 def index():
@@ -41,6 +43,35 @@ def get_record(recordid):
         abort(404)
     except MultipleResultsFound:
         abort(400)
+
+@app.route('/datatable/', methods=['GET'])
+def get_datatable():
+    '''Handle datatable requests'''
+
+    params = argparse(request.args.to_dict())
+    draw = int(params['draw'])
+    length = int(params['length'])
+    page = int(params['start']) / length
+    page = 1 if page < 1 else page
+
+    datapage = QR5Record.query.paginate(page, length, True)
+
+    data = []
+    for item in datapage.items:
+        datarow = []
+        datarow.append(item.dfirm_layer)
+        datarow.append(item.firm_panel)
+        datarow.append(item.error_code)
+        datarow.append(item.error_desc)
+
+        data.append(datarow)
+
+    return jsonify({
+        'draw': draw,
+        'recordsTotal': datapage.total,
+        'recordsFiltered': datapage.total,
+        'data': data
+    })
 
 @app.route('/upload/', methods=['POST'])
 def upload():
