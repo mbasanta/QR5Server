@@ -4,6 +4,7 @@
 
 from flask import jsonify, request, abort
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy.sql.expression import desc, asc
 from qr5server import app, db
 from qr5server.models import QR5Record
 from qr5server.helpers.argparse import argparse
@@ -47,14 +48,25 @@ def get_record(recordid):
 def get_datatable():
     '''Handle datatable requests'''
 
+    # Grab some basic parameters
     params = argparse(request.args.to_dict())
     draw = int(params['draw'])
+
+    # Get the base query
+    datapage = QR5Record.query
+
+    # Apply sort logic
+    for order in params['order'].values():
+        sort_dir = desc if order['dir'] == 'desc' else asc
+        sort_col = getattr(QR5Record, params['columns'][order['column']]['data'])
+        datapage = datapage.order_by(sort_dir(sort_col))
+
+    # Paginate our data as needed
     length = int(params['length'])
     page = (int(params['start']) / length) + 1
-    # page = 1 if page < 1 else page
+    datapage = datapage.paginate(page, length, True)
 
-    datapage = QR5Record.query.paginate(page, length, True)
-
+    # Iterate data and ruturn datatables formatted output
     data = []
     for item in datapage.items:
         datarow = {}
