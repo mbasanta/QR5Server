@@ -63,14 +63,14 @@ def get_datatable():
 
     # Apply search logic
     search_val = str(params['search']['value'])
-    print search_val
-    datapage = datapage.filter(or_(
-        QR5Record.dfirm_layer.like('%' + search_val + '%'),
-        QR5Record.firm_panel.like('%' + search_val + '%'),
-        QR5Record.error_code.like('%' + search_val + '%'),
-        QR5Record.error_desc.like('%' + search_val + '%'),
-        QR5Record.record_id.like('%' + search_val + '%')
-    ))
+    if len(search_val) > 0:
+        datapage = datapage.filter(or_(
+            QR5Record.dfirm_layer.like('%' + search_val + '%'),
+            QR5Record.firm_panel.like('%' + search_val + '%'),
+            QR5Record.error_code.like('%' + search_val + '%'),
+            QR5Record.error_desc.like('%' + search_val + '%'),
+            QR5Record.record_id.like('%' + search_val + '%')
+        ))
 
     # Paginate our data as needed
     length = int(params['length'])
