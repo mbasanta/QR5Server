@@ -4,7 +4,7 @@
 
 from flask import jsonify, request, abort
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from sqlalchemy.sql.expression import desc, asc
+from sqlalchemy import desc, asc, or_
 from qr5server import app, db
 from qr5server.models import QR5Record
 from qr5server.helpers.argparse import argparse
@@ -58,8 +58,19 @@ def get_datatable():
     # Apply sort logic
     for order in params['order'].values():
         sort_dir = desc if order['dir'] == 'desc' else asc
-        sort_col = getattr(QR5Record, params['columns'][order['column']]['data'])
+        sort_col = getattr(QR5Record, str(params['columns'][order['column']]['data']))
         datapage = datapage.order_by(sort_dir(sort_col))
+
+    # Apply search logic
+    search_val = str(params['search']['value'])
+    print search_val
+    datapage = datapage.filter(or_(
+        QR5Record.dfirm_layer.like('%' + search_val + '%'),
+        QR5Record.firm_panel.like('%' + search_val + '%'),
+        QR5Record.error_code.like('%' + search_val + '%'),
+        QR5Record.error_desc.like('%' + search_val + '%'),
+        QR5Record.record_id.like('%' + search_val + '%')
+    ))
 
     # Paginate our data as needed
     length = int(params['length'])
