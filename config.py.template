@@ -45,3 +45,4 @@ class TestConfiguration(BaseConfiguration):
 class DebugConfiguration(BaseConfiguration):
     '''Config options for debug'''
     DEBUG = True
+    SQLALCHEMY_ECHO = True
