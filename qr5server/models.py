@@ -26,12 +26,10 @@ class QR5Record(db.Model):
         return '<QR5Record %r>' % self.record_id
 
     @property
-    def serialize(self):
-        '''Return object in dict for easy serialization'''
+    def properties(self):
+        '''Return object properties in dict'''
         return {
             'record_id':self.record_id,
-            'lat': self.lat,
-            'lng': self.lng,
             'dfirm_feat_id': self.dfirm_feat_id,
             'dfirm_layer': self.dfirm_layer,
             'firm_panel': self.firm_panel,
@@ -44,3 +42,26 @@ class QR5Record(db.Model):
             'comments': self.comments,
             'response': self.response
         }
+
+    @property
+    def to_dict(self):
+        '''Return object in dict for easy serialization'''
+        return_val = self.properties
+        return_val['lat'] = self.lat
+        return_val['lng'] = self.lng
+
+        return return_val
+
+    @property
+    def to_geojson(self):
+        '''Return object in geojson style dict for easy serialization'''
+        feature = {'type': 'Feature'}
+        feature['geometry'] = {
+            'type': 'Point',
+            'coordinates': [
+                self.lng, self.lat
+            ]
+        }
+        feature['properties'] = self.properties
+
+        return feature

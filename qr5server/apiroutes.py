@@ -26,7 +26,7 @@ def get_records(page=1):
     prev_page = datapage.prev_num if datapage.has_prev else -1
 
     return jsonify({
-        'records': [item.serialize for item in datapage.items],
+        'records': [item.to_dict for item in datapage.items],
         'next_num': next_page,
         'prev_num': prev_page,
         'items': datapage.total,
@@ -38,7 +38,7 @@ def get_record(recordid):
     '''API endpoint to get a record by id'''
     try:
         instance = QR5Record.query.filter_by(record_id=recordid).one()
-        return jsonify(instance.serialize)
+        return jsonify(instance.to_dict)
     except NoResultFound:
         abort(404)
     except MultipleResultsFound:
