@@ -6,7 +6,7 @@ from flask import jsonify, request, abort
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy import desc, asc, or_
 from qr5server import app, db
-from qr5server.models import QR5Record
+from qr5server.models.qr5record import QR5Record
 from qr5server.helpers.argparse import argparse
 
 @app.route('/', methods=['GET'])
