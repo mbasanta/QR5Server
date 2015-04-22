@@ -1,10 +1,12 @@
 #!/Users/mbasanta/virtualenvs/QR5Server/bin/python
 
 from migrate.versioning import api
-from config import SQLALCHEMY_DATABASE_URI
-from config import SQLALCHEMY_MIGRATE_REPO
+from config import BaseConfiguration
 
-api.upgrade(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
-v = api.db_version(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
+DATABASE_URI = BaseConfiguration.SQLALCHEMY_DATABASE_URI
+MIGRATE_REPO = BaseConfiguration.SQLALCHEMY_MIGRATE_REPO
+
+api.upgrade(DATABASE_URI, MIGRATE_REPO)
+v = api.db_version(DATABASE_URI, MIGRATE_REPO)
 
 print('Current database version: ' + str(v))
