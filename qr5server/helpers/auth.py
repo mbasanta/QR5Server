@@ -16,5 +16,9 @@ def verify_password(email, password):
 
 @auth.error_handler
 def auth_error():
-    '''Unauthorized access handler'''
-    return make_response(jsonify({'Error': 'Unauthorized access'}), 401)
+    '''
+    Unauthorized access handler, We're returning a 403 error to keep the
+    browser from prompting the user for a login and pw. This is an API,
+    remember?
+    '''
+    return make_response(jsonify({'Error': 'Unauthorized access'}), 403)
