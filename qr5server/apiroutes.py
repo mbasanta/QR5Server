@@ -13,7 +13,10 @@ from qr5server.helpers.argparse import argparse
 @auth.login_required
 def index():
     '''Place holder for landing page'''
-    return jsonify({'server': 'QR5 Database'})
+    return jsonify({
+        'server': 'QR5 Database',
+        'email': auth.username()
+    })
 
 @app.route('/qr5record/', methods=['GET'])
 @app.route('/qr5record/<int:page>/', methods=['GET'])
