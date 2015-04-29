@@ -1,3 +1,4 @@
+'''Base test case class with setup/teardown methods'''
 import base64
 import unittest
 from qr5server import app, db
@@ -22,6 +23,7 @@ class BaseTestCase(unittest.TestCase):
         db.drop_all()
 
     def get_with_auth(self, url, method):
+        '''get a url that is secured'''
         return self.app.open(
             url,
             method=method,
