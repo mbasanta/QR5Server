@@ -32,6 +32,10 @@ class TestApi(BaseTestCase):
         self.assertEqual(records[0]['record_id'], expected['ID'] \
             .replace('{', '').replace('}', ''))
 
-    def test_pagination(self):
-        '''test our pagination for long responses'''
+    def test_qr5record_to_dict(self):
+        '''test dictionary response for qr5record'''
+        pass
+
+    def test_qr5record_to_geojson(self):
+        '''test geojson response for qr5record'''
         pass
