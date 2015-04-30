@@ -2,7 +2,7 @@
 
 # pylint: disable=no-member
 
-from flask import jsonify, request, abort
+from flask import jsonify, request, abort, render_template
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy import desc, asc, or_
 from qr5server import app, db, auth
@@ -62,8 +62,10 @@ def get_datatable():
     # Apply sort logic
     for order in params['order'].values():
         sort_dir = desc if order['dir'] == 'desc' else asc
-        sort_col = getattr(QR5Record, str(params['columns'][order['column']]['data']))
-        datapage = datapage.order_by(sort_dir(sort_col))
+        if str(params['columns'][order['column']]['orderable']) == 'true':
+            sort_col = getattr(QR5Record,
+                               str(params['columns'][order['column']]['data']))
+            datapage = datapage.order_by(sort_dir(sort_col))
 
     # Apply search logic
     search_val = str(params['search']['value'])
@@ -86,6 +88,8 @@ def get_datatable():
     for item in datapage.items:
         datarow = {}
         datarow['DT_RowData'] = {'pkey': item.record_id}
+        datarow['buttons'] = render_template('datatable-buttons.html',
+                                             item=item)
         datarow['dfirm_layer'] = item.dfirm_layer
         datarow['firm_panel'] = item.firm_panel
         datarow['error_code'] = item.error_code
