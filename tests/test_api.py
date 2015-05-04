@@ -11,9 +11,8 @@ class TestApi(BaseTestCase):
 
     def test_empty_db(self):
         '''Test to make sure our empty db returns nothing'''
-        # return_val = self.client.get('/')
-        # self.assertEquals(json.loads(return_val.data)['server'], 'QR5 Database')
-        pass
+        return_val = self.get_with_auth('/', 'GET')
+        self.assertEquals(json.loads(return_val.data)['server'], 'QR5 Database')
 
     def test_upload(self):
         '''Test a small upload'''
@@ -22,17 +21,21 @@ class TestApi(BaseTestCase):
             upload_json = json.loads(upload_str)
         expected = upload_json['features'][0]['attributes']
 
-        response = self.client.post('/upload/', data=upload_str,
-                                    content_type='application/json')
+        response = self.app.post('/upload/', data=upload_str,
+                                 content_type='application/json')
         self.assertEquals(response.status_code, 202)
         self.assertEquals(response.mimetype, 'application/json')
 
-        records = json.loads(self.client.get('/qr5record/').data)['records']
+        records = json.loads(self.app.get('/qr5record/').data)['records']
         self.assertEquals(len(records), 2)
 
         self.assertEqual(records[0]['record_id'], expected['ID'] \
             .replace('{', '').replace('}', ''))
 
-    def test_pagination(self):
-        '''test our pagination for long responses'''
+    def test_qr5record_to_dict(self):
+        '''test dictionary response for qr5record'''
+        pass
+
+    def test_qr5record_to_geojson(self):
+        '''test geojson response for qr5record'''
         pass
