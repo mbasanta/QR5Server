@@ -84,12 +84,20 @@ def get_datatable():
     datapage = datapage.paginate(page, length, True)
 
     # Iterate data and ruturn datatables formatted output
+    try:
+        details_link = params['detailsLink']
+    except KeyError:
+        details_link = '#/'
+
     data = []
     for item in datapage.items:
         datarow = {}
         datarow['DT_RowData'] = {'pkey': item.record_id}
-        datarow['buttons'] = render_template('datatable-buttons.html',
-                                             item=item)
+        datarow['buttons'] = render_template(
+            'datatable-buttons.html',
+            item=item,
+            details_link=details_link
+        )
         datarow['dfirm_layer'] = item.dfirm_layer
         datarow['firm_panel'] = item.firm_panel
         datarow['error_code'] = item.error_code
